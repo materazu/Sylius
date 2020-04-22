@@ -1,5 +1,14 @@
 doctrine_migrations:
-    dir_name: "%kernel.project_dir%/app/migrations"
-    namespace: Sylius\Migrations
-    table_name: sylius_migrations
-    name: Sylius Migrations
+    storage:
+        table_storage:
+            table_name: sylius_migrations
+    services:
+        'Doctrine\Migrations\Version\MigrationFactory': 'Sylius\Bundle\CoreBundle\Migrations\ProjectVersionFactory'
+
+services:
+    Sylius\Bundle\CoreBundle\Migrations\ProjectVersionFactory.inner:
+        class: Doctrine\Migrations\Version\MigrationFactory
+        factory: ['@doctrine.migrations.dependency_factory', 'getMigrationFactory']
+
+    Sylius\Bundle\CoreBundle\Migrations\ProjectVersionFactory:
+        arguments: ['@Sylius\Bundle\CoreBundle\Migrations\ProjectVersionFactory.inner', '@service_container']
